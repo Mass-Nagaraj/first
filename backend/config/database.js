@@ -9,4 +9,3 @@ const sequelize =new Sequelize("first","root",'nagaraj',{
 
 module.exports = sequelize;
 
-
