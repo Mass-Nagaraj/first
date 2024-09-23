@@ -1,0 +1,56 @@
+
+.variants-addons {
+    width: 35%;
+    padding: 20px;
+    border-left: 1px solid #ccc;
+  }
+  
+  .product-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .product-info img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+  .quantity label {
+    display: block;
+    margin: 10px 0;
+  }
+  
+  .quantity-control {
+    display: flex;
+    align-items: center;
+  }
+  
+  .quantity-control button {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .quantity-control input {
+    width: 50px;
+    text-align: center;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  
+  .bottom-contents{
+    position: absolute;
+    bottom: 10px;
+    width: 50%;
+  }

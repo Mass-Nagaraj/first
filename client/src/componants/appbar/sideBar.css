@@ -1,0 +1,19 @@
+.sidebar {
+    width: 5%;
+    background-color: #0b2541;
+    color: white;
+    padding: 20px;
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    margin: 20px 0;
+    cursor: pointer;
+  }
+
+  
+  
