@@ -1,18 +1,28 @@
 
+const express=require('express');
+const app=express();
 const db=require('../models/index');
 const category_master = db.category_master;
 const Products = db.products;
 const variance = db.variants;
 const cart = db.cart;
+const errorHandler=require('../middleware/errorHandler')
+app.use(express.json());
+
+
 
 // 1.create product (insert) 
 
-const addProduct = async (req, res) => {
-    
-    // console.log("HIiii");
+const addProduct = async (req, res,next) => {
 
     try {
-      const coming_products=req.body;
+
+        if( Object.keys(req.body).length ===0 || !req.body.name || !req.body.category_id || !req.body.img_url  ) {
+            throw new Error("Error occurs while sending request datas")
+        }
+
+        const coming_products=req.body;
+      
 
       if(Array.isArray(coming_products)) {
 
@@ -42,18 +52,26 @@ const addProduct = async (req, res) => {
   
     } catch (error) {
       
-        console.error('Error creating product:', error);
-        res.status(500).send({
-            message: "Error occurred while creating the product.",
-            error: error.message
-        });
+        // console.error('Error creating product:', error);
+        // return res.status(500).send({
+        //     message: "Error occurred while creating the product.",
+        //     error: error.message
+        // })
+        return next(error)
+
     }
   };
 
+  
   const addCategoryMaster = async (req,res)=>{
-
-    
-    try {
+      
+      
+      try {
+   
+        if( Object.keys(req.body).length ===0 || !req.body.name || !req.body.is_active ) {
+            throw new Error("Error occurs while sending request datas")
+        }
+   
         const coming_products=req.body;
   
         if(Array.isArray(coming_products)) {
@@ -73,8 +91,8 @@ const addProduct = async (req, res) => {
   
             const product = await category_master.create({
               
-              // name: req.body.name,
-              // is_active: req.body.is_active
+              name: req.body.name,
+              is_active: req.body.is_active
   
             });
             
@@ -97,9 +115,12 @@ const addProduct = async (req, res) => {
 
 const addProductVariants = async (req, res) => {
     
-    // console.log("HIiii");
-
+    
     try {
+        
+    if( Object.keys(req.body).length ===0 || !req.body.product_id || !req.body.name || !req.body.is_active || req.body.price ) {
+        throw new Error("Error occurs while sending request datas")
+    }
       const coming_products=req.body;
 
       if(Array.isArray(coming_products)) {
@@ -147,12 +168,17 @@ const addProductVariants = async (req, res) => {
 
 const addCart = async (req, res) => {
     
-    // console.log("HIiii");
+    
 
     try {
-      const coming_products=req.body;
 
-      if(Array.isArray(coming_products)) {
+        if( Object.keys(req.body).length ===0 || !req.body.product_id || !req.body.category_id || !req.body.quantity || req.body.total_price ) {
+            throw new Error("Error occurs while sending request datas")
+        }
+        
+        const coming_products=req.body;
+
+        if(Array.isArray(coming_products)) {
 
             const processedProducts = coming_products.map(product => ({
                 product_id: product.product_id,
@@ -165,7 +191,7 @@ const addCart = async (req, res) => {
             const BulkProducts=await cart.bulkCreate(processedProducts);
             res.status(200).send(BulkProducts);
 
-      }else{
+        }else{
 
           const product = await cart.create({
             
@@ -178,14 +204,14 @@ const addCart = async (req, res) => {
           
           res.status(200).send(product);
           console.log(product);
-      }
+          }
   
-    } catch (error) {
+         } catch (error) {
       
-        console.error('Error creating product:', error);
-        res.status(500).send({
-            message: "Error occurred while creating the product variance.",
-            error: error.message
+            console.error('Error creating product:', error);
+            res.status(500).send({
+                message: "Error occurred while creating the product variance.",
+                error: error.message
         });
     }
   };
@@ -216,7 +242,6 @@ const getAllproducts = async (req,res) =>{
     res.status(200).send(products);
     
 }
-
 
 const getCartProducts = async (req,res) =>{
 
@@ -252,6 +277,58 @@ const getCartProducts_products = async (req,res) =>{
 }
 
 
+const delCart = async (req,res)=>{
+
+    const id=req.params.id;
+    const DelCart = await cart.destroy( { where : { id: id }} );
+    res.send("Cart Deleted Success..!")
+}
+
+
+// Get Specific Datas Using Foreign Key
+
+const getCategoryMaster_products_variants = async (req,res)=>{
+
+    const id=req.params.id;
+    const product = await category_master.findOne( {where :{id:id},
+         include: [
+            { model: db.products, as: 'products' },
+            { model: db.cart, as: 'cart' },
+           
+    ]});
+
+    res.status(200).send(product);
+}
+
+
+const getAllVariants = async (req,res)=>{
+
+    const product_id=req.params.id;
+    const product = await variance.findAll({where : {product_id:product_id }});
+
+    res.status(200).send(product);
+}
+
+
+const getCategoryId = async (req,res)=>{
+    
+    const category_id=req.params.category_id;
+    // console.log(category_id," and its DataType is :",typeof category_id)
+
+    const product = await Products.findAll( {where :{category_id :category_id},
+        include: [
+            { model: db.variants, as: 'products_variants' }
+
+    ]});
+
+    res.status(200).send(product);
+}
+
+
+
+
+//Extra API for Products Table
+
 // 3.get Single product
 
 const getSingleproducts = async (req,res)=>{
@@ -280,42 +357,9 @@ const deleteProduct = async (req,res)=>{
     res.send("Product Deleted Success..!")
 }
 
-const delCart = async (req,res)=>{
+// Middle_Ware for Error Handling
 
-    const id=req.params.id;
-    const DelCart = await cart.destroy( { where : { id: id }} );
-    res.send("Cart Deleted Success..!")
-}
-
-
-// Get Specific Datas Using Foreign Key
-
-const getCategoryMaster_products_variants = async (req,res)=>{
-
-    const id=req.params.id;
-    const product = await category_master.findOne( {where :{id:id},
-         include: [
-            { model: db.products, as: 'products' },
-            { model: db.cart, as: 'cart' },
-           
-    ]});
-
-    res.status(200).send(product);
-}
-
-const getCategoryId = async (req,res)=>{
-
-    const category_id=req.params.category_id;
-    const product = await Products.findAll( {where :{category_id :category_id},
-        include: [
-            { model: db.variants, as: 'products_variants' }
-
-    ]});
-
-    res.status(200).send(product);
-}
-
-
+app.use(errorHandler)
 
 module.exports={
     addProduct,
@@ -331,7 +375,8 @@ module.exports={
     delCart,
     getCategoryMaster_products_variants,
     addCategoryMaster,
-    getCategoryId
+    getCategoryId,
+    getAllVariants
 }
 
 

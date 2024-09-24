@@ -1,16 +1,31 @@
+const {v4:uuidv4 } =require('uuid') 
+
 
 const demo1_datas=[
     {
-        "demo1":"Chicken"
+        id:uuidv4(),
+        "demo1":"Chicken",
+        createdAt:new Date(),
+        updatedAt:new Date()
     },
     {
-        "demo1":"Pizza"
+        id:uuidv4(),
+        "demo1":"Pizza",
+        createdAt:new Date(),
+        updatedAt:new Date()
+    
     },
     {
-        "demo1":"Burger"
+        id:uuidv4(),
+        "demo1":"Burger",
+        createdAt:new Date(),
+        updatedAt:new Date()
     },
     {
-        "demo1":"Potota"
+        id:uuidv4(),
+        "demo1":"Potota",
+        createdAt:new Date(),
+        updatedAt:new Date()
     },
     
     ]

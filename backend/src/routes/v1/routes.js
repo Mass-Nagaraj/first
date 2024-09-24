@@ -25,6 +25,8 @@ router.get('/getCartProducts_products',productController.getCartProducts_product
 
 router.get('/:id',productController.getCategoryMaster_products_variants);
 
+router.get('/getAllVariants/:id',productController.getAllVariants);
+
 router.get('/getCategoryId/:category_id',productController.getCategoryId)
 
 router.put('/:id',productController.updateProduct)

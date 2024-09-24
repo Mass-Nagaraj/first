@@ -14,6 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   demo_table1.init({
+
+    id: {
+      type : DataTypes.UUID,
+      primaryKey: true,
+      defaultValue:DataTypes.UUIDV4,
+      allowNull:false
+    },
     demo1: DataTypes.STRING
   }, {
     sequelize,
@@ -21,3 +28,6 @@ module.exports = (sequelize, DataTypes) => {
   });
   return demo_table1;
 };
+
+
+

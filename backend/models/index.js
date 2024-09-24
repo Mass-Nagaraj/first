@@ -55,7 +55,6 @@ db.sequelize.sync({ force: false,logging: console.log })
 })
 
 
-
 // To Add Foreign Key into Both Child-Classes ( products and cart ) form Parent-Class (product_category_master)
 
 // 1 to Many Replationship 
@@ -108,8 +107,5 @@ db.cart.belongsTo(db.variants,{
   as:'products_variants'
 })
 
-
-
 module.exports = db;
-
 
